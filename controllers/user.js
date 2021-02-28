@@ -1,7 +1,9 @@
-const models = require("../models");
-const User = models.User;
+const { Op } = require("sequelize");
 
-module.exports = () => {
+module.exports = (app) => {
+    const models = require("../models")(app);
+    const User = models.User;
+
     function listAll(req, res) {
         res.type("json");
         User.findAll({}).then(users => {
@@ -26,10 +28,43 @@ module.exports = () => {
         let status = req.body.status;
         let role = req.body.role;
 
-        User.findOne({
-            where: {
-                email: email
-            }
-        })
+        const isUserUnique = email => 
+            User.findOne({where: {
+                [Op.or]: [
+                    { email: email },
+                    { login: login}
+                ]
+            }}).then(
+                result => result !== null
+                ).then(
+                    isUnique => isUnique
+                );
+        
+        if (isUserUnique) {
+            console.log("is unique");
+            User.create({
+                email : email,
+                firstname : firstname,
+                lastname : lastname,
+                phone : phone,
+                login : login,
+                password : password,
+                status : status,
+                role : role
+            }).then(user => {
+                if (user) {
+                    res.json({msg: "OK", result: user});
+                } else {
+                    res.json({msg: "XCP", result: "Unable to create user"});
+                }
+            }).catch(err => {
+                res.json({msg: "ERR", result: err});
+            })
+        } else {
+            console.log("not unique");
+        }
+        
     }
-}
+
+    return {listAll, create};
+};
