@@ -1,9 +1,10 @@
-const express = require('express');
+const Koa = require('koa');
 
-var router = express.Router();
+const Router = require('koa-router');
+var router = new Router();
 
 // create web app:
-const app = express();
+const app = new Koa();
 
 // load configurations:
 require('./config')(app);
