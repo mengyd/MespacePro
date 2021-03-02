@@ -30,18 +30,18 @@ module.exports = (app) => {
 
         const isUserUnique = email => 
             User.findOne({where: {
-                [Op.or]: [
-                    { email: email },
-                    { login: login}
-                ]
+                email: email
+                // [Op.or]: [
+                //     { email: email },
+                //     { login: login}
+                // ]
             }}).then(
-                result => result !== null
+                result => result == null
                 ).then(
                     isUnique => isUnique
                 );
-        
-        if (isUserUnique) {
-            console.log("is unique");
+
+        if (isUserUnique === true) {
             User.create({
                 email : email,
                 firstname : firstname,
@@ -62,6 +62,7 @@ module.exports = (app) => {
             })
         } else {
             console.log("not unique");
+            res.json({msg: "XCP", result: "User already existed"})
         }
         
     }
