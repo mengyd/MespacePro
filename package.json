@@ -5,15 +5,20 @@
   "main": "app.js",
   "dependencies": {
     "@koa/router": "^10.0.0",
-    "body-parser": "^1.19.0",
     "koa": "^2.13.1",
+    "koa-bodyparser": "^4.3.0",
     "koa-router": "^10.0.0",
+    "nodemon": "^2.0.7",
     "pg": "^8.5.1",
     "pg-hstore": "^2.3.3",
     "sequelize": "^6.5.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "sequelize-cli": "^6.2.0"
+  },
   "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

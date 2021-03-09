@@ -1,5 +1,5 @@
-module.exports = (app) => {
-    app.controllers = {
-        user: require('./user')(app)
-    };
+const UserController = require('./user');
+
+module.exports = {
+    UserController
 };

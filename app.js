@@ -1,27 +1,21 @@
 const Koa = require('koa');
+const bodyParser = require('koa-bodyparser');
 
-const Router = require('koa-router');
-var router = new Router();
-
+const router = require('./routes');
 // create web app:
 const app = new Koa();
-
-// load configurations:
-require('./config')(app);
+const PORT = 3000;
 
 // Connect to the database:
-const db = require('./models')(app);
-db.sequelize.sync();
+const db = require('./models');
+db.sequelize.sync({})
+.then(() => console.log('models synced!'))
+.catch((err) => console.log(err));
 
-// load middlewares:
-require('./middlewares')(app);
-// load controllers:
-require('./controllers')(app);
-// load routes:
-require('./routes')(app, router);
+app.context.db = db;
+app.use(bodyParser());
 
+app.use(router.routes());
 
-// listen to the port:
-app.listen(app.configuration.port, () => {
-    console.log('listening on port: ' + app.configuration.port + '...');
-});
+app.listen(PORT);
+console.log(`Server is listening on PORT ${PORT}`);
