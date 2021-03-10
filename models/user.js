@@ -6,6 +6,10 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: false,
             unique: true
         },
+        password: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
         firstname: {
             type: DataTypes.STRING,
             allowNull: false
@@ -17,15 +21,6 @@ module.exports = function (sequelize, DataTypes) {
         phone: {
             type: DataTypes.STRING,
             unique: true
-        },
-        login: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            unique: true
-        },
-        password: {
-            type: DataTypes.STRING,
-            allowNull: false
         },
         status: {
             type: DataTypes.ENUM,
