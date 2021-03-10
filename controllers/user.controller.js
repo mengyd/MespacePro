@@ -1,5 +1,7 @@
 'use strict';
 
+const UtilService = require('../services/util.service');
+
 module.exports = {
 
     emailExists: async function (ctx) {
@@ -56,25 +58,50 @@ module.exports = {
         }
     },
 
-    async create(ctx) {
+    async signup(ctx) {
         try {
-            const emailExists = await module.exports.emailExists(ctx);
-            const phoneExists = await module.exports.phoneExists(ctx);
+            let {
+                email, firstname, lastname, phone, 
+                password, status, role
+            } = ctx.request.body;
+
+            if (!email) {
+                ctx.throw(400, 'please provide the email');
+            }
+            if (!password) {
+                ctx.throw(400, 'please provide the password');
+            }
+            const encryptedPassword = await UtilService.encryptPassword(password);
+
+            if (!status) {
+                status = 'activated';
+            }
+            if (!role) {
+                role = 'user';
+            }
+
+            let emailExists = await module.exports.emailExists(ctx);
             if (emailExists) {
                 ctx.throw(409, "email already exists!");
-            } else if (phoneExists) {
-                ctx.throw(409, "phone already exists!");
-            } else {
-                ctx.body = await ctx.db.User.create({
-                    email: ctx.request.body.email,
-                    firstname: ctx.request.body.firstname,
-                    lastname: ctx.request.body.lastname,
-                    phone: ctx.request.body.phone,
-                    password: ctx.request.body.password,
-                    status: ctx.request.body.status,
-                    role: ctx.request.body.role
-                });
+            } 
+            
+            if (phone) {
+                let phoneExists = await module.exports.phoneExists(ctx);
+                if (phoneExists) {     
+                    ctx.throw(409, "phone already exists!");
+                }
             }
+
+            ctx.body = await ctx.db.User.create({
+                email: email,
+                firstname: firstname,
+                lastname: lastname,
+                phone: phone,
+                password: encryptedPassword,
+                status: status,
+                role: role
+            });
+
         } catch (err) {
             ctx.throw(500, err);
         }
