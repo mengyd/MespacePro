@@ -1,6 +1,8 @@
 'use strict';
 
 const UtilService = require('../services/util.service');
+const JwtService = require('../services/jwt.service');
+const config = require('../config/config.json');
 
 module.exports = {
 
@@ -83,7 +85,7 @@ module.exports = {
             let emailExists = await module.exports.emailExists(ctx);
             if (emailExists) {
                 ctx.throw(409, "email already exists!");
-            } 
+            }
             
             if (phone) {
                 let phoneExists = await module.exports.phoneExists(ctx);
@@ -107,8 +109,47 @@ module.exports = {
         }
     },
 
+    async login(ctx) {
+        try {
+            let {email, password} = ctx.request.body;
+            const expiresIn = '12h'
+            if (!email) {
+                ctx.throw(400, "please provide email");
+            }
+            if (!password) {
+                ctx.throw(400, "please provide password");
+            }
+    
+            const user = await module.exports.emailExists(ctx);
+            if(!user){
+                ctx.throw(410, "user not found");
+            }
+
+            const isMatched = await UtilService.comparePassword(password, user.password);
+            if (isMatched) {
+                const token = await JwtService.createToken({
+                    payload: {
+                        user: user.id
+                    }
+                }, config.development.expiresIn);
+
+                ctx.body = {token};
+            } else {
+                ctx.throw(400, "invalid password");
+            }
+
+        } catch (err) {
+            ctx.throw(500, err);
+        }
+    },
+
     async modify(ctx) {
         try {
+            let {
+                email, firstname, lastname, phone, 
+                password, status, role
+            } = ctx.request.body;
+            let encryptedPassword = null;
             const userEmailExists = await module.exports.emailExists(ctx);
             const userPhoneExists = await module.exports.phoneExists(ctx);
             if (userEmailExists && userEmailExists.id != ctx.params.id) {
@@ -116,14 +157,20 @@ module.exports = {
             } else if (userPhoneExists && userPhoneExists.id != ctx.params.id) {
                 ctx.throw(409, "phone already exists!");
             } else {
+                if (password) {
+                    encryptedPassword = await UtilService.encryptPassword(password);
+                }
+                if (encryptedPassword) {
+                    password = encryptedPassword;
+                }
                 ctx.body = await ctx.db.User.update({
-                    email: ctx.request.body.email,
-                    firstname: ctx.request.body.firstname,
-                    lastname: ctx.request.body.lastname,
-                    phone: ctx.request.body.phone,
-                    password: ctx.request.body.password,
-                    status: ctx.request.body.status,
-                    role: ctx.request.body.role
+                    email: email,
+                    firstname: firstname,
+                    lastname: lastname,
+                    phone: phone,
+                    password: password,
+                    status: status,
+                    role: role
                 }, {
                     where: {
                         id: ctx.params.id
