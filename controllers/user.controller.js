@@ -158,10 +158,7 @@ module.exports = {
                 ctx.throw(409, "phone already exists!");
             } else {
                 if (password) {
-                    encryptedPassword = await UtilService.encryptPassword(password);
-                }
-                if (encryptedPassword) {
-                    password = encryptedPassword;
+                    password = await UtilService.encryptPassword(password);
                 }
                 ctx.body = await ctx.db.User.update({
                     email: email,
