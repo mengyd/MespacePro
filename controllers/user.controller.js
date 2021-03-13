@@ -84,13 +84,13 @@ module.exports = {
 
             let emailExists = await module.exports.emailExists(ctx);
             if (emailExists) {
-                ctx.throw(409, "email already exists!");
+                ctx.throw(409, "email already used!");
             }
             
             if (phone) {
                 let phoneExists = await module.exports.phoneExists(ctx);
                 if (phoneExists) {     
-                    ctx.throw(409, "phone already exists!");
+                    ctx.throw(409, "phone already used!");
                 }
             }
 
@@ -153,27 +153,29 @@ module.exports = {
             const userEmailExists = await module.exports.emailExists(ctx);
             const userPhoneExists = await module.exports.phoneExists(ctx);
             if (userEmailExists && userEmailExists.id != ctx.params.id) {
-                ctx.throw(409, "email already exists!");
-            } else if (userPhoneExists && userPhoneExists.id != ctx.params.id) {
-                ctx.throw(409, "phone already exists!");
-            } else {
-                if (password) {
-                    password = await UtilService.encryptPassword(password);
-                }
-                ctx.body = await ctx.db.User.update({
-                    email: email,
-                    firstname: firstname,
-                    lastname: lastname,
-                    phone: phone,
-                    password: password,
-                    status: status,
-                    role: role
-                }, {
-                    where: {
-                        id: ctx.params.id
-                    }
-                });
+                ctx.throw(409, "email already used!");
+            } 
+            if (userPhoneExists && userPhoneExists.id != ctx.params.id) {
+                ctx.throw(409, "phone already used!");
             }
+            if (password) {
+                password = await UtilService.encryptPassword(password);
+            }
+
+            ctx.body = await ctx.db.User.update({
+                email: email,
+                firstname: firstname,
+                lastname: lastname,
+                phone: phone,
+                password: password,
+                status: status,
+                role: role
+            }, {
+                where: {
+                    id: ctx.params.id
+                }
+            });
+            
         } catch (err) {
             ctx.throw(500, err);
         }
@@ -190,9 +192,9 @@ module.exports = {
 
             if (result === 0) {
                 ctx.throw(410, "user not found");
-            } else {
-                ctx.body = `deleted user with id ${id}`;
             }
+
+            ctx.body = `deleted user with id ${id}`;
         } catch (err) {
             ctx.throw(500, err);
         }

@@ -1,17 +1,29 @@
 const Router = require('koa-router');
 const router = new Router();
 const {
-    UserController
+    UserController,
+    DepartmentController
 } = require('../controllers');
+const userController = require('../controllers/user.controller');
 const basicRoute = '/api'
 const authenticated = require('../polices/authenticated');
 
-//define all your routes
-router.get(`${basicRoute}/users`, authenticated, UserController.findAll);
-router.get(`${basicRoute}/users/:id`, authenticated, UserController.findById);
-router.post(`${basicRoute}/users`, UserController.signup);
-router.post(`${basicRoute}/users/login`, UserController.login);
-router.put(`${basicRoute}/users/:id`, authenticated, UserController.modify);
-router.delete(`${basicRoute}/users/:id`, authenticated, UserController.deleteById);
+//define all your routes:
+
+// user routes
+router.get(`${basicRoute}/user`, authenticated, UserController.findAll);
+router.get(`${basicRoute}/user/:id`, authenticated, UserController.findById);
+router.post(`${basicRoute}/user`, UserController.signup);
+router.post(`${basicRoute}/user/login`, UserController.login);
+router.put(`${basicRoute}/user/:id`, authenticated, UserController.modify);
+router.delete(`${basicRoute}/user/:id`, authenticated, UserController.deleteById);
+
+//department routes
+router.get(`${basicRoute}/department`, authenticated, DepartmentController.findAll);
+router.get(`${basicRoute}/department/:id`, authenticated, DepartmentController.findById);
+router.post(`${basicRoute}/department`, authenticated, DepartmentController.create);
+router.put(`${basicRoute}/department/:id`, authenticated, DepartmentController.modify);
+router.delete(`${basicRoute}/department/:id`, authenticated, DepartmentController.delete);
+
 
 module.exports = router;

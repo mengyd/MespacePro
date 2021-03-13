@@ -1,6 +1,6 @@
 'use strict';
-module.exports = function (sequelize, DataTypes) {
-    const User = sequelize.define('User', {
+module.exports = (sequelize, DataTypes) => {
+    let User = sequelize.define('User', {
         email: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -27,12 +27,20 @@ module.exports = function (sequelize, DataTypes) {
         },
         role: {
             type: DataTypes.ENUM,
-            values: ['admin', 'manager', 'user'],
+            values: ['super', 'admin', 'user'],
             allowNull: false
         }
     }, {
         freezeTableName: true
     });
+
+    User.associate = models => {
+        User.belongsTo(models.Department, {
+            foreignKey: {
+                allowNull: false
+            }
+        });
+    }
 
     return User;
 };
