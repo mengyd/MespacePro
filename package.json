@@ -16,6 +16,7 @@
     "sequelize": "^6.5.0"
   },
   "devDependencies": {
+    "cz-conventional-changelog": "^3.3.0",
     "sequelize-cli": "^6.2.0"
   },
   "scripts": {
@@ -32,5 +33,10 @@
   "bugs": {
     "url": "https://github.com/mengyd/MespacePro/issues"
   },
-  "homepage": "https://github.com/mengyd/MespacePro#readme"
+  "homepage": "https://github.com/mengyd/MespacePro#readme",
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
 }

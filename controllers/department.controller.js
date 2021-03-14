@@ -1,7 +1,5 @@
 'use strict';
 
-const { findAll, findById, modify } = require("./user.controller");
-
 module.exports = {
 
     titleExists: async function (ctx) {
