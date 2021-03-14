@@ -36,7 +36,13 @@ module.exports = {
 
     async findAll(ctx) {
         try {
-            ctx.body = await ctx.db.User.findAll();
+            ctx.body = await ctx.db.User.findAll({
+                include: [
+                    {
+                        model: ctx.db.Department
+                    }
+                ]
+            });
         } catch (err) {
             ctx.throw(500, err);
         }
@@ -48,7 +54,12 @@ module.exports = {
             const user = await ctx.db.User.findOne({
                 where: {
                     id
-                }
+                },
+                include: [
+                    {
+                        model: ctx.db.Department
+                    }
+                ]
             });
             if (user) {
                 ctx.body = user;
@@ -147,9 +158,8 @@ module.exports = {
         try {
             let {
                 email, firstname, lastname, phone, 
-                password, status, role
+                password, status, role, DepartmentId
             } = ctx.request.body;
-            let encryptedPassword = null;
             const userEmailExists = await module.exports.emailExists(ctx);
             const userPhoneExists = await module.exports.phoneExists(ctx);
             if (userEmailExists && userEmailExists.id != ctx.params.id) {
@@ -169,7 +179,8 @@ module.exports = {
                 phone: phone,
                 password: password,
                 status: status,
-                role: role
+                role: role,
+                DepartmentId: DepartmentId,
             }, {
                 where: {
                     id: ctx.params.id

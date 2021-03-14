@@ -16,27 +16,38 @@ module.exports = {
         }
     },
 
+    async findAll(ctx) {
+        try {
+            ctx.body = await ctx.db.Department.findAll({
+                include: [
+                    {
+                        model: ctx.db.User
+                    }
+                ]
+            });
+        } catch (err) {
+            ctx.throw(500, err);
+        }
+    },
+
     async findById(ctx) {
         try {
             const id = ctx.params.id;
             const department = await ctx.db.Department.findOne({
                 where: {
                     id
-                }
+                },
+                include: [
+                    {
+                        model: ctx.db.User
+                    }
+                ]            
             });
             if(department) {
                 ctx.body = department;
             } else {
                 ctx.throw(410, "department not found");
             }
-        } catch (err) {
-            ctx.throw(500, err);
-        }
-    },
-
-    async findAll(ctx) {
-        try {
-            ctx.body = await ctx.db.Department.findAll();
         } catch (err) {
             ctx.throw(500, err);
         }
