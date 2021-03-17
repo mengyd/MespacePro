@@ -8,8 +8,8 @@ module.exports = async (ctx, next) => {
             }
         });
 
-        if (user.role < 3) {
-            ctx.throw(401, 'Unauthorized');
+        if (!user.isActive) {
+            ctx.throw(401, 'not activated');
         }
 
         await next();

@@ -20,14 +20,12 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             unique: true
         },
-        status: {
-            type: DataTypes.ENUM,
-            values: ['activated', 'paused', 'dimissioned'],
+        isActive: {
+            type: DataTypes.BOOLEAN,
             allowNull: false
         },
         role: {
-            type: DataTypes.ENUM,
-            values: ['super', 'admin', 'user'],
+            type: DataTypes.INTEGER,
             allowNull: false
         }
     }, {
@@ -37,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
     User.associate = models => {
         User.belongsTo(models.Department, {
             foreignKey: {
-                allowNull: false
+                allowNull: true
             }
         });
     }

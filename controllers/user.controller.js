@@ -75,7 +75,7 @@ module.exports = {
         try {
             let {
                 email, firstname, lastname, phone, 
-                password, status, role
+                password, role
             } = ctx.request.body;
 
             if (!email) {
@@ -86,11 +86,9 @@ module.exports = {
             }
             const encryptedPassword = await UtilService.encryptPassword(password);
 
-            if (!status) {
-                status = 'activated';
-            }
             if (!role) {
-                role = 'user';
+                // default role: user
+                role = 1;
             }
 
             let emailExists = await module.exports.emailExists(ctx);
@@ -111,7 +109,7 @@ module.exports = {
                 lastname: lastname,
                 phone: phone,
                 password: encryptedPassword,
-                status: status,
+                isActive: false,
                 role: role
             });
 
@@ -158,13 +156,13 @@ module.exports = {
         try {
             let {
                 email, firstname, lastname, phone, 
-                password, status, role, DepartmentId
+                password, isActive, role, DepartmentId
             } = ctx.request.body;
             const userEmailExists = await module.exports.emailExists(ctx);
             const userPhoneExists = await module.exports.phoneExists(ctx);
             if (userEmailExists && userEmailExists.id != ctx.params.id) {
                 ctx.throw(409, "email already used!");
-            } 
+            }
             if (userPhoneExists && userPhoneExists.id != ctx.params.id) {
                 ctx.throw(409, "phone already used!");
             }
@@ -178,7 +176,7 @@ module.exports = {
                 lastname: lastname,
                 phone: phone,
                 password: password,
-                status: status,
+                isActive: isActive,
                 role: role,
                 DepartmentId: DepartmentId,
             }, {

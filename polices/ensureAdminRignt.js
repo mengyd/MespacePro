@@ -8,7 +8,7 @@ module.exports = async (ctx, next) => {
             }
         });
 
-        if (user.role < 3) {
+        if (user.role < 2) {
             ctx.throw(401, 'Unauthorized');
         }
 
