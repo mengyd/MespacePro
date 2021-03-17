@@ -6,6 +6,7 @@ const {
 } = require('../controllers');
 const basicRoute = '/api'
 const authenticated = require('../polices/authenticated');
+const ensureSuperRight = require('../polices/ensureSuperRight');
 
 //define all your routes:
 
@@ -15,7 +16,7 @@ router.get(`${basicRoute}/user/:id`, authenticated, UserController.findById);
 router.post(`${basicRoute}/user`, UserController.signup);
 router.post(`${basicRoute}/user/login`, UserController.login);
 router.put(`${basicRoute}/user/:id`, authenticated, UserController.modify);
-router.delete(`${basicRoute}/user/:id`, authenticated, UserController.deleteById);
+router.delete(`${basicRoute}/user/:id`, authenticated, ensureSuperRight, UserController.deleteById);
 
 //department routes
 router.get(`${basicRoute}/department`, authenticated, DepartmentController.findAll);
