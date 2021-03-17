@@ -4,7 +4,7 @@ const {
     UserController,
     DepartmentController
 } = require('../controllers');
-const basicRoute = '/api'
+const basicRoute = '/api';
 const authenticated = require('../polices/authenticated');
 const ensureSuperRight = require('../polices/ensureSuperRight');
 
