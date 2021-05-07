@@ -1,7 +1,7 @@
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 
-const router = require('./routes');
+const router = require('./routes/router');
 // create web app:
 const app = new Koa();
 const PORT = 3000;
@@ -9,8 +9,8 @@ const PORT = 3000;
 // Connect to the database:
 const db = require('./models');
 db.sequelize.sync({force: true})
-.then(() => console.log('models synced!'))
-.catch((err) => console.log(err));
+    .then(() => console.log('models synced!'))
+    .catch((err) => console.log(err));
 
 app.context.db = db;
 app.use(bodyParser());

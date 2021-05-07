@@ -13,6 +13,13 @@ module.exports = (sequelize, DataTypes) => {
     Department.associate = models => {
         Department.hasMany(models.User);
     }
+    Department.associate = models => {
+        Department.belongsTo(models.User, {
+            foreignKey: {
+                allowNull: true
+            }
+        });
+    }
 
     return Department;
 };
