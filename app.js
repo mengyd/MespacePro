@@ -16,6 +16,7 @@ app.context.db = db;
 app.use(bodyParser());
 
 app.use(router.routes());
+app.use(router.allowedMethods());
 
 app.listen(PORT);
 console.log(`Server is listening on PORT ${PORT}`);

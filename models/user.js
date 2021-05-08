@@ -27,6 +27,10 @@ module.exports = (sequelize, DataTypes) => {
         role: {
             type: DataTypes.INTEGER,
             allowNull: false
+        },
+        job: {
+            type: DataTypes.STRING,
+            allowNull: true
         }
     }, {
         freezeTableName: true
@@ -38,10 +42,6 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: true
             }
         });
-    }
-
-    User.associate = models => {
-        User.hasOne(models.Department);
     }
 
     return User;
