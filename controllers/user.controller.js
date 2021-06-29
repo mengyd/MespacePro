@@ -19,7 +19,7 @@ module.exports = {
             ctx.throw(500, err);
         }
     },
-
+    
     phoneExists: async function (ctx) {
         try {
             let phone = ctx.request.body.phone;

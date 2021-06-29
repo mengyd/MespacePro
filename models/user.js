@@ -1,4 +1,7 @@
 'use strict';
+
+const user_project = require("./user_project");
+
 module.exports = (sequelize, DataTypes) => {
     let User = sequelize.define('User', {
         email: {
@@ -41,6 +44,10 @@ module.exports = (sequelize, DataTypes) => {
             foreignKey: {
                 allowNull: true
             }
+        });
+
+        User.belongsToMany(models.Project, {
+            through: models.user_project
         });
     }
 
